@@ -1,0 +1,19 @@
+exclude tox.ini
+exclude *.swp
+
+# Include the README
+include *.md
+
+# Include the license file
+include COPYING
+
+include *.txt
+
+recursive-include vtr_xml_utils *.py
+
+# Include the resources files
+recursive-include vtr_xml_utils/resources *.xsl
+recursive-include vtr_xml_utils/resources *.xsd
+
+# Tests
+graft tests
