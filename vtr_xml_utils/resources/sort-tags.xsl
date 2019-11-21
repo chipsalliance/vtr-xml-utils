@@ -17,10 +17,13 @@
    <xsl:apply-templates select="output">
     <xsl:sort select="@name" order="ascending"/>
    </xsl:apply-templates>
+   <xsl:apply-templates select="delay_constant">
+    <xsl:sort select="concat(@out_port,@in_port)" order="ascending"/>
+   </xsl:apply-templates>
    <xsl:apply-templates select="pb_type">
     <xsl:sort select="@name" order="ascending"/>
    </xsl:apply-templates>
-   <xsl:apply-templates select="*[not(self::clock or self::input or self::output or self::pb_type)]"/>
+   <xsl:apply-templates select="*[not(self::clock or self::input or self::output or self::pb_type or self::delay_constant)]"/>
   </xsl:copy>
  </xsl:template>
  <!-- Sort <interconnect><XXX> tags by output - direct first then muxes, finally input -->
