@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='utf-8'?>
+<pb_type blif_model=".subckt blifmodel" name="test">
+  <input name="b" num_pins="2"/>
+  <input name="m" num_pins="1"/>
+  <input name="a" num_pins="2"/>
+  <output name="bout" num_pins="4"/>
+  <output name="aout" num_pins="4"/>
+  <delay_constant in_port="b" max="30e-12" out_port="bout"/>
+  <delay_constant in_port="b" max="30e-12" out_port="aout"/>
+  <delay_constant in_port="a" max="30e-12" out_port="aout"/>
+  <delay_constant in_port="a" max="30e-12" out_port="bout"/>
+  <delay_constant in_port="m" max="10e-12" out_port="aout"/>
+</pb_type>
