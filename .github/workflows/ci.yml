@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+
+
+  Checks:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: symbiflow/actions/checks@main
+
+
+  Tests:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { version: 3.5, ver: 35 }
+          - { version: 3.6, ver: 36 }
+          - { version: 3.7, ver: 37 }
+          - { version: 3.8, ver: 38 }
+          - { version: 3.9, ver: 39 }
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.version}}
+
+    - name: Install dependencies
+      run: |
+        pip install wheel setuptools
+        pip install tox
+
+    - run: python -m tox
+      env:
+        TOXENV: py${{ matrix.ver}}
