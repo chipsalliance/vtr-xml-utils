@@ -1,4 +1,13 @@
 <?xml version="1.0"?>
+<!-- 
+ Copyright (C) 2020  The SymbiFlow Authors.
+
+ Use of this source code is governed by a ISC-style
+ license that can be found in the LICENSE file or at
+ https://opensource.org/licenses/ISC
+
+ SPDX-License-Identifier:   ISC
+-->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 
   <xsl:include href="identity.xsl" />

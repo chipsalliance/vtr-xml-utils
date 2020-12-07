@@ -5,7 +5,9 @@ exclude *.swp
 include *.md
 
 # Include the license file
-include COPYING
+include LICENSE
+# Include the AUTHORS file
+include AUTHORS
 
 include *.txt
 
