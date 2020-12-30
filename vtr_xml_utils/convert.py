@@ -14,6 +14,8 @@ import pkg_resources
 import os
 from pathlib import Path
 
+from .pack_pattern_expander import expand_pack_patterns
+
 
 def get_filenames_containing(pattern, rootdir):
     return list(set([str(f) for f in
@@ -54,5 +56,9 @@ def vtr_stylize_xml(xmlfilename: str):
         xslt = ET.parse(xslresourcesroot + c, parser)
         transform = ET.XSLT(xslt)
         etdata = transform(etdata)
+
+    # Expand pack-patterns
+    expand_pack_patterns(etdata.getroot())
+
     return '<?xml version="1.0"?>\n' \
            + ET.tostring(etdata, pretty_print=True).decode('utf-8')
