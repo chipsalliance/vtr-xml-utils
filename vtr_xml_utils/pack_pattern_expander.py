@@ -18,6 +18,7 @@ import lxml.etree as ET
 
 PORT_SPEC_RE = re.compile(r"(?P<port>[A-Za-z0-9_\-\.]+)(\[(?P<bit>[0-9]+)\])?")
 
+
 def parse_port_spec(spec):
     """
     Extracts pin index from a port specification. Returns a tuple with
@@ -64,7 +65,7 @@ def is_leaf_pb(pbtype_xml):
     """
     Checks whether a pb_type is a leaf
     """
-    assert pbtype_xml.tag == "pb_type", pb_type_xml.tag
+    assert pbtype_xml.tag == "pb_type", pbtype_xml.tag
 
     if "blif_model" in pbtype_xml.attrib:
         return True
@@ -91,7 +92,7 @@ def get_pb_parent(pbtype_xml):
 def get_pb_by_name(parent_xml, name):
     """
     Searches for a pb_type with the given name. Returns either a child or
-    the parent. 
+    the parent.
     """
     assert parent_xml.tag in ["pb_type", "mode"], parent_xml.tag
 
@@ -119,7 +120,7 @@ def yield_modes(pbtype_xml):
     Yields all mode elements of a pb_type element. If there are none yield the
     element itself as a default mode.
     """
-    assert pbtype_xml.tag == "pb_type", pb_type_xml.tag
+    assert pbtype_xml.tag == "pb_type", pbtype_xml.tag
 
     mode_xmls = pbtype_xml.findall("mode")
     if mode_xmls:
@@ -166,7 +167,7 @@ def walk_up(pbtype_xml, port_xml, bit, paths, curr_path=None):
     """
     Walks up the pb_tree, records all possible paths.
     """
-    assert pbtype_xml.tag == "pb_type", pb_type_xml.tag
+    assert pbtype_xml.tag == "pb_type", pbtype_xml.tag
 
 #    print(" walk_up(): {} {}.{}[{}]".format(
 #        pbtype_xml.tag,
@@ -191,7 +192,7 @@ def walk_up(pbtype_xml, port_xml, bit, paths, curr_path=None):
 
         # There is no parent, we've reached a top-level pb_type
         if pbtype_xml is None:
-            #paths.append(curr_path) # Annotate top-level port
+            # paths.append(curr_path) # Annotate top-level port
             return
 
     # Process each mode (there is always at least one implicit)
@@ -222,30 +223,45 @@ def walk_up(pbtype_xml, port_xml, bit, paths, curr_path=None):
 
                         # Get pb_type
                         inp_pbtype_xml = get_pb_by_name(mode_xml, inp_pb_name)
-                        assert inp_pbtype_xml is not None, (mode_xml.attrib["name"], inp_pb_name)
+                        assert inp_pbtype_xml is not None, \
+                            (mode_xml.attrib["name"], inp_pb_name)
 
                         # Get port
-                        inp_port_xml = get_port_by_name(inp_pbtype_xml, inp_port)
-                        assert inp_port_xml is not None, (inp_pbtype_xml.attrib["name"], inp_port, inp_bit)
+                        inp_port_xml = get_port_by_name(
+                            inp_pbtype_xml,
+                            inp_port
+                        )
+                        assert inp_port_xml is not None, \
+                            (inp_pbtype_xml.attrib["name"], inp_port, inp_bit)
 
-                        #print("  walk_up():", conn_xml.tag, conn_xml.attrib, inp_port_spec)
+                        # print("  walk_up():", conn_xml.tag, conn_xml.attrib,
+                        #    inp_port_spec)
 
                         # Store the interconnect element
                         branch = list(curr_path)
                         branch.append((conn_xml, inp_port_spec))
 
                         # Walk upward
-                        walk_up(inp_pbtype_xml, inp_port_xml, inp_bit, paths, branch)
+                        walk_up(
+                            inp_pbtype_xml,
+                            inp_port_xml,
+                            inp_bit,
+                            paths,
+                            branch
+                        )
 
             else:
-                print("  walk_up(): ERROR: <{}> interconnect not supported yet!".format(conn_xml.tag))
+                print(
+                    "  walk_up(): ERROR: "
+                    "<{}> interconnect not supported yet!".format(conn_xml.tag)
+                )
 
 
 def walk_down(pbtype_xml, port_xml, bit, paths, curr_path=None):
     """
     Walks down the pb_tree, records all possible paths.
     """
-    assert pbtype_xml.tag == "pb_type", pb_type_xml.tag
+    assert pbtype_xml.tag == "pb_type", pbtype_xml.tag
 
 #    print(" walk_down(): {} {}.{}[{}]".format(
 #        pbtype_xml.tag,
@@ -270,7 +286,7 @@ def walk_down(pbtype_xml, port_xml, bit, paths, curr_path=None):
 
         # There is no parent, we've reached a top-level pb_type
         if pbtype_xml is None:
-            #paths.append(curr_path) # Annotate top-level port
+            # paths.append(curr_path) # Annotate top-level port
             return
 
     # Process each mode (there is always at least one implicit)
@@ -299,23 +315,34 @@ def walk_down(pbtype_xml, port_xml, bit, paths, curr_path=None):
 
                     # Get pb_type
                     out_pbtype_xml = get_pb_by_name(mode_xml, out_pb_name)
-                    assert out_pbtype_xml is not None, (mode_xml.attrib["name"], out_pb_name)
+                    assert out_pbtype_xml is not None, \
+                        (mode_xml.attrib["name"], out_pb_name)
 
                     # Get port
                     out_port_xml = get_port_by_name(out_pbtype_xml, out_port)
-                    assert out_port_xml is not None, (out_pbtype_xml.attrib["name"], out_port, out_bit)
+                    assert out_port_xml is not None, \
+                        (out_pbtype_xml.attrib["name"], out_port, out_bit)
 
-                    #print("  walk_down():", conn_xml.tag, conn_xml.attrib)
+                    # print("  walk_down():", conn_xml.tag, conn_xml.attrib)
 
                     # Store the interconnect element
                     branch = list(curr_path)
                     branch.append((conn_xml, inp_port_spec))
 
                     # Walk downward
-                    walk_down(out_pbtype_xml, out_port_xml, out_bit, paths, branch)
+                    walk_down(
+                        out_pbtype_xml,
+                        out_port_xml,
+                        out_bit,
+                        paths,
+                        branch
+                    )
 
             else:
-                print("  walk_down(): ERROR: <{}> interconnect not supported yet!".format(conn_xml.tag))
+                print(
+                    "  walk_down(): ERROR: "
+                    "<{}> interconnect not supported yet!".format(conn_xml.tag)
+                )
 
 # =============================================================================
 
@@ -342,7 +369,7 @@ def expand_pack_pattern(pp_xml):
     conn_xml = pp_xml.getparent()
     if conn_xml.tag not in ["direct"]:
         print("ERROR: <{}> interconnect not supported".format(conn_xml.tag))
-        return        
+        return
 
     # Remove the original annotation
     conn_xml.remove(pp_xml)
@@ -371,7 +398,8 @@ def expand_pack_pattern(pp_xml):
 
         # Walk
         if direction == "input":
-            walk_up(pbtype_xml, port_xml, bit, paths_up, [(conn_xml, inp_port_spec)])
+            walk_up(pbtype_xml, port_xml, bit, paths_up,
+                    [(conn_xml, inp_port_spec)])
         elif direction == "output":
             walk_down(pbtype_xml, port_xml, bit, paths_down)
         else:
