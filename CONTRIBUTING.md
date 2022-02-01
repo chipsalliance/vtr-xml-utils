@@ -12,7 +12,7 @@ All contributions should be sent as
 
 All software (code, associated documentation, support files, etc) in the
 Yosys SymbiFlow Plugins repository are licensed under the very permissive
-[ISC Licence](COPYING). A copy can be found in the [`COPYING`](COPYING) file.
+[Apache-2.0](LICENS). A copy can be found in the [`LICENSE`](LICENSE) file.
 
 All new contributions must also be released under this license.
 
